@@ -6,6 +6,4 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "krest.rpc")
 public class KrestRpcProperties {
-    String host;
-    Integer port;
 }
