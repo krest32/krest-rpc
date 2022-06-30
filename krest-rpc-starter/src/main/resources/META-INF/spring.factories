@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.krest.rpc.starter.KrestRpcAutoConfiguration
