@@ -34,12 +34,12 @@ public class RpcServer {
         this.threads = threads;
         this.rpcInvokeHook = rpcInvokeHook;
 
-        rpcServerRequestHandler = new RpcServerRequestHandler(interfaceClass,
-                serviceProvider, threads, rpcInvokeHook);
+        rpcServerRequestHandler = new RpcServerRequestHandler(interfaceClass, serviceProvider, threads, rpcInvokeHook);
         rpcServerRequestHandler.start();
     }
 
     public void start() {
+        // 配置服务器
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -49,16 +49,18 @@ public class RpcServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new NettyKryoDecoder(),
-                                    new RpcServerDispatchHandler(rpcServerRequestHandler),
-                                    new NettyKryoEncoder());
+                            ch.pipeline().addLast(new NettyKryoDecoder());
+                            ch.pipeline().addLast(new RpcServerDispatchHandler(rpcServerRequestHandler));
+                            ch.pipeline().addLast(new NettyKryoEncoder());
                         }
                     });
+
             bootstrap.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
             bootstrap.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
             bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
             bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
 
+            // 启动服务器
             ChannelFuture channelFuture = bootstrap.bind(port);
             channelFuture.sync();
             Channel channel = channelFuture.channel();

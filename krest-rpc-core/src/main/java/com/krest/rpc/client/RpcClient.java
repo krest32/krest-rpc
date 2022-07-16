@@ -28,7 +28,6 @@ public class RpcClient implements InvocationHandler {
     private int port;
     private boolean isReConn = false;
 
-
     private RpcClientResponseHandler rpcClientResponseHandler;
     private AtomicInteger invokeIdGenerator = new AtomicInteger(0);
     private Bootstrap bootstrap;
@@ -51,57 +50,73 @@ public class RpcClient implements InvocationHandler {
         this.isReConn = isReConn;
 
         rpcClientResponseHandler = new RpcClientResponseHandler(threads);
+        // 失联后，启动监听器，重新连接
         if (isReConn) {
-            rpcClientChannelInactiveListener = new RpcClientChannelInactiveListener() {
-                @Override
-                public void onInactive() {
-                    log.info("connection with server is closed.");
-                    log.info("try to reconnect to the server.");
-                    channel = null;
-                    do {
-                        channel = tryConnect();
-                    }
-                    while (channel == null);
+            rpcClientChannelInactiveListener = () -> {
+                log.info("connection with server is closed.");
+                log.info("try to reconnect to the server.");
+                // 置 channel 保证可以重新开始连接
+                channel = null;
+                do {
+                    channel = tryConnect();
                 }
+                while (channel == null);
             };
         }
     }
 
+    /**
+     * 执行远程调用
+     */
     public RpcFuture call(String methodName, Object... args) {
+        // 执行远程调用前的钩子函数
         if (rpcInvokeHook != null) {
             rpcInvokeHook.beforeInvoke(methodName, args);
         }
 
+        // 构造一个异步调用的结果
         RpcFuture rpcFuture = new RpcFuture();
+        // 生成唯一的远程调用 id
         int id = invokeIdGenerator.addAndGet(1);
+        // 交给结果监听器去处理
         rpcClientResponseHandler.register(id, rpcFuture);
-
+        // 构建远程调用的
         RpcRequest rpcRequest = new RpcRequest(id, methodName, args);
+        // 远侧调用
         if (channel != null) {
             channel.writeAndFlush(rpcRequest);
         } else {
             return null;
         }
-
+        // 返回远程调用的结果
         return rpcFuture;
     }
 
+    /**
+     * 所有被代理的方法，都会走这个部分
+     */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
+        // 生成异步调用的结果
         RpcFuture rpcFuture = call(method.getName(), args);
+
+        // 如果调用失败
         if (rpcFuture == null) {
             log.info("RpcClient is unavailable when disconnect with the server.");
             return null;
         }
 
-        Object result;
+        // 调用成功，获取结果
+        Object result = null;
+        // 但是该方法会阻塞在这里，如果超过了时间，那么就会报出异常
         if (timeoutMills == 0) {
             result = rpcFuture.get();
         } else {
             result = rpcFuture.get(timeoutMills);
         }
 
+        // 执行调用之后的方法
         if (rpcInvokeHook != null) {
             rpcInvokeHook.afterInvoke(method.getName(), args);
         }
@@ -111,15 +126,17 @@ public class RpcClient implements InvocationHandler {
     public void connect() {
         bootstrap = new Bootstrap();
         try {
-            bootstrap.group(eventLoopGroup).channel(NioSocketChannel.class)
+            bootstrap.group(eventLoopGroup)
+                    .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<Channel>() {
                         @Override
                         protected void initChannel(Channel ch) throws Exception {
-                            ch.pipeline().addLast(new NettyKryoDecoder(),
-                                    new RpcClientDispatchHandler(rpcClientResponseHandler, rpcClientChannelInactiveListener),
-                                    new NettyKryoEncoder());
+                            ch.pipeline().addLast(new NettyKryoDecoder());
+                            ch.pipeline().addLast(new NettyKryoEncoder());
+                            ch.pipeline().addLast(new RpcClientDispatchHandler(rpcClientResponseHandler, rpcClientChannelInactiveListener));
                         }
                     });
+
             bootstrap.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
             bootstrap.option(ChannelOption.TCP_NODELAY, true);
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true);

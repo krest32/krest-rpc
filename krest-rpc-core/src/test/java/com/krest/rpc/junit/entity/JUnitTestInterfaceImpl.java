@@ -1,9 +1,10 @@
-package com.krest.rpc.junit;
+package com.krest.rpc.junit.entity;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class JUnitTestInterfaceImpl implements JUnitTestInterface {
+
     public String methodWithoutArg() {
         return "this is return from methodWithoutArg()";
     }

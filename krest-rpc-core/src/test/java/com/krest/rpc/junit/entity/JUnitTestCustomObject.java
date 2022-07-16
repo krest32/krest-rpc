@@ -1,4 +1,4 @@
-package com.krest.rpc.junit;
+package com.krest.rpc.junit.entity;
 
 public class JUnitTestCustomObject {
     private String string;
@@ -29,11 +29,11 @@ public class JUnitTestCustomObject {
     @Override
     public boolean equals(Object obj) {
         JUnitTestCustomObject object = null;
-        if (obj instanceof JUnitTestCustomObject)
+        if (obj instanceof JUnitTestCustomObject) {
             object = (JUnitTestCustomObject) obj;
-        else
+        } else {
             return false;
-
+        }
         return (this.string.equals(object.string)) && (this.i == object.i);
     }
 }

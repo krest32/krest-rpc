@@ -1,28 +1,16 @@
 package com.krest.rpc.common;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * 请求样式
  */
+@Data
+@AllArgsConstructor
 public class RpcRequest {
     int id;
     String methodName;
     Object[] args;
 
-    public RpcRequest(int id, String methodName, Object[] args) {
-        this.id = id;
-        this.methodName = methodName;
-        this.args = args;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getMethodName() {
-        return methodName;
-    }
-
-    public Object[] getArgs() {
-        return args;
-    }
 }

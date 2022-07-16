@@ -1,15 +1,12 @@
 package com.krest.rpc.common;
 
 import io.netty.channel.Channel;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class RpcRequestWrapper {
     private final RpcRequest rpcRequest;
     private final Channel channel;
-
-    public RpcRequestWrapper(RpcRequest rpcRequest, Channel channel) {
-        this.rpcRequest = rpcRequest;
-        this.channel = channel;
-    }
 
     public int getId() {
         return rpcRequest.getId();

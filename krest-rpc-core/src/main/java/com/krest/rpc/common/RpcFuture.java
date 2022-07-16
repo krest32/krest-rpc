@@ -1,10 +1,11 @@
 package com.krest.rpc.common;
 
-import com.krest.rpc.server.RpcFutureListener;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class RpcFuture {
     // 调用代码
     public final static int STATE_AWAIT = 0;
@@ -24,28 +25,32 @@ public class RpcFuture {
     }
 
     public Object get() throws Throwable {
+        // 等待结果
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         if (state == STATE_SUCCESS) {
             return result;
         } else if (state == STATE_EXCEPTION) {
             throw throwable;
-            //should not run to here!
+            // 最终不应该走这个异常
         } else {
             throw new RuntimeException("RpcFuture Exception!");
         }
     }
 
+    /**
+     * 等待多长时间然后获取结果
+     */
     public Object get(long timeout) throws Throwable {
         boolean awaitSuccess = true;
         try {
             awaitSuccess = countDownLatch.await(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         if (!awaitSuccess) {
@@ -56,7 +61,6 @@ public class RpcFuture {
             return result;
         } else if (state == STATE_EXCEPTION) {
             throw throwable;
-            //should not run to here!
         } else {
             throw new RuntimeException("RpcFuture Exception!");
         }
@@ -69,7 +73,6 @@ public class RpcFuture {
         if (rpcFutureListener != null) {
             rpcFutureListener.onResult(result);
         }
-
         countDownLatch.countDown();
     }
 
@@ -90,6 +93,4 @@ public class RpcFuture {
     public void setRpcFutureListener(RpcFutureListener rpcFutureListener) {
         this.rpcFutureListener = rpcFutureListener;
     }
-
-
 }

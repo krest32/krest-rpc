@@ -10,4 +10,5 @@ public class KrestRpcService {
     public KrestRpcService(KrestRpcProperties rpcProperties) {
         this.rpcProperties = rpcProperties;
     }
+
 }

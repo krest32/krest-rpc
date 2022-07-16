@@ -1,5 +1,7 @@
-package com.krest.rpc.junit;
+package com.krest.rpc.junit.server;
 
+import com.krest.rpc.junit.entity.JUnitTestInterface;
+import com.krest.rpc.junit.entity.JUnitTestInterfaceImpl;
 import com.krest.rpc.server.RpcServer;
 import com.krest.rpc.server.RpcServerBuilder;
 import org.junit.Test;

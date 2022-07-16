@@ -1,7 +1,9 @@
 package com.krest.rpc.server;
 
 import com.krest.rpc.common.RpcInvokeHook;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RpcServerBuilder {
 
     private Class<?> interfaceClass;
@@ -15,10 +17,9 @@ public class RpcServerBuilder {
         return new RpcServerBuilder();
     }
 
+
     /**
-     * set the interface to provide service
-     *
-     * @param interfaceClass
+     * 设置代理的对象的类型，最好是接口类型
      */
     public RpcServerBuilder serviceInterface(Class<?> interfaceClass) {
         this.interfaceClass = interfaceClass;
@@ -26,32 +27,23 @@ public class RpcServerBuilder {
     }
 
     /**
-     * set the real object to provide service
+     * 设置最终的服务的提供方
      */
     public RpcServerBuilder serviceProvider(Object serviceProvider) {
         this.serviceProvider = serviceProvider;
         return this;
     }
 
-    /**
-     * set the port to bind
-     */
     public RpcServerBuilder bind(int port) {
         this.port = port;
         return this;
     }
 
-    /**
-     * set the count of threads to handle request from client. (default availableProcessors)
-     */
     public RpcServerBuilder threads(int threadCount) {
         this.threads = threadCount;
         return this;
     }
 
-    /**
-     * set the hook of the method invoke in server
-     */
     public RpcServerBuilder hook(RpcInvokeHook rpcInvokeHook) {
         this.rpcInvokeHook = rpcInvokeHook;
         return this;
@@ -63,7 +55,6 @@ public class RpcServerBuilder {
         }
         RpcServer rpcServer = new RpcServer(interfaceClass, serviceProvider, port,
                 threads, rpcInvokeHook);
-
         return rpcServer;
     }
 }

@@ -2,6 +2,7 @@ package com.krest.rpc.junit;
 
 
 import com.krest.rpc.client.RpcClientProxyBuilder;
+import com.krest.rpc.junit.entity.JUnitTestInterface;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;
@@ -17,6 +18,7 @@ public class RpcPerformanceTest {
     public final static int TIMEOUT = 300;
 
     public static void main(String[] args) throws Exception {
+
         jUnitTestInterface = RpcClientProxyBuilder.create(JUnitTestInterface.class)
                 .timeout(0)
                 .threads(4)
@@ -27,6 +29,7 @@ public class RpcPerformanceTest {
         CountDownLatch countDownLatch = new CountDownLatch(THREADS * INVOKES);
         log.info("RpcPerformanceTest started.");
         long startTime = System.currentTimeMillis();
+
         for (int i = 0; i < THREADS; i++) {
             threadPool.execute(new RpcPerformanceTestThread(jUnitTestInterface, countDownLatch));
         }

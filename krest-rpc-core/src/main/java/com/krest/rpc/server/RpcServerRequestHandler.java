@@ -2,12 +2,14 @@ package com.krest.rpc.server;
 
 import com.krest.rpc.common.RpcInvokeHook;
 import com.krest.rpc.common.RpcRequestWrapper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
+@Slf4j
 public class RpcServerRequestHandler {
     private Class<?> interfaceClass;
     private Object serviceProvider;
@@ -25,11 +27,17 @@ public class RpcServerRequestHandler {
         this.rpcInvokeHook = rpcInvokeHook;
     }
 
+    /**
+     * 开启线程最终处理请求的方法
+     */
     public void start() {
         threadPool = Executors.newFixedThreadPool(threads);
         for (int i = 0; i < threads; i++) {
-            threadPool.execute(new RpcServerRequestHandleRunnable(interfaceClass,
-                    serviceProvider, rpcInvokeHook, requestQueue));
+            // 最终的处理方法
+            threadPool.execute(new RpcServerRequestHandleRunnable(
+                            interfaceClass, serviceProvider, rpcInvokeHook, requestQueue
+                    )
+            );
         }
     }
 
@@ -37,7 +45,7 @@ public class RpcServerRequestHandler {
         try {
             requestQueue.put(rpcRequestWrapper);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.info(e.getMessage(), e);
         }
     }
 }

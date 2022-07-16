@@ -24,9 +24,7 @@ public class RpcRequestSerializer extends Serializer<RpcRequest> {
         byte[] methodBytes = input.readBytes(methodLength);
         String methodName = new String(methodBytes);
         Object[] args = (Object[]) kryo.readClassAndObject(input);
-
         rpcRequest = new RpcRequest(id, methodName, args);
-
         return rpcRequest;
     }
 }

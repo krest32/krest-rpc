@@ -9,16 +9,16 @@ import org.springframework.stereotype.Service;
 public class RpcService2Impl implements RpcService2 {
 
     @Override
-    public String testMethod1() {
+    public String testMethod1(String name, int id) {
         String result = "hello RpcService2 testMethod1";
-        System.out.println(result);
+        System.out.println(name + " " + id);
         return result;
     }
 
     @Override
-    public String testMethod2() {
+    public String testMethod2(String name, int id) {
         String result = "hello RpcService2 testMethod2";
-        System.out.println(result);
+        System.out.println(name + " " + id);
         return result;
     }
 }

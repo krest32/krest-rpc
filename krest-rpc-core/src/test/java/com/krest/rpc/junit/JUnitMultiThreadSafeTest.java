@@ -1,6 +1,7 @@
 package com.krest.rpc.junit;
 
 import com.krest.rpc.client.RpcClientProxyBuilder;
+import com.krest.rpc.junit.entity.JUnitTestInterface;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.fail;
 
 public class JUnitMultiThreadSafeTest {
+
     public static JUnitTestInterface jUnitTestInterface;
     public final static int THREADS = 20;
     public final static int INVOKES = 1000;

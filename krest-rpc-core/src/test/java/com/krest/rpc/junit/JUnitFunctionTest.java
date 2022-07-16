@@ -6,7 +6,10 @@ import com.krest.rpc.common.RpcFuture;
 import com.krest.rpc.common.RpcInvokeHook;
 import com.krest.rpc.common.RpcMethodNotFoundException;
 import com.krest.rpc.common.RpcTimeoutException;
-import com.krest.rpc.server.RpcFutureListener;
+import com.krest.rpc.common.RpcFutureListener;
+import com.krest.rpc.junit.entity.JUnitTestCustomException;
+import com.krest.rpc.junit.entity.JUnitTestCustomObject;
+import com.krest.rpc.junit.entity.JUnitTestInterface;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -57,8 +60,10 @@ public class JUnitFunctionTest {
                 .connect("127.0.0.1", 3721)
                 .buildAsyncProxy();
     }
+
     @Test
     public void testMethodWithoutArg() {
+        // 断言 返回结果是相同的
         assertEquals("this is return from methodWithoutArg()",
                 jUnitTestInterface.methodWithoutArg());
     }
@@ -72,8 +77,7 @@ public class JUnitFunctionTest {
     @Test
     public void methodWithCustomObject() {
         JUnitTestCustomObject beforeCustomObject = new JUnitTestCustomObject("before", 3);
-        JUnitTestCustomObject afterCustomObject =
-                jUnitTestInterface.methodWithCustomObject(beforeCustomObject);
+        JUnitTestCustomObject afterCustomObject = jUnitTestInterface.methodWithCustomObject(beforeCustomObject);
         assertEquals("before after", afterCustomObject.getString());
         assertEquals(50, afterCustomObject.getI());
     }
@@ -90,6 +94,9 @@ public class JUnitFunctionTest {
         jUnitTestInterface.methodThrowException();
     }
 
+    /**
+     * 测试未能通过
+     */
     @Test(expected = RpcTimeoutException.class)
     public void testMethodTimeOut() {
         jUnitTestInterface.methodTimeOut();
