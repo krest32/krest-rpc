@@ -1,8 +1,8 @@
 package com.krest.rpc.demo;
 
-import com.krest.rpc.demo.day5.common.RpcInvokeHook;
-import com.krest.rpc.demo.day5.server.RpcServer;
-import com.krest.rpc.demo.day5.server.RpcServerBuilder;
+import com.krest.rpc.common.RpcInvokeHook;
+import com.krest.rpc.server.RpcServer;
+import com.krest.rpc.server.RpcServerBuilder;
 
 public class TestServerBuildAndStart {
     public static void main(String[] args) {

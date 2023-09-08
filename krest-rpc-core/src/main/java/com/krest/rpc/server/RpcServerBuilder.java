@@ -17,7 +17,6 @@ public class RpcServerBuilder {
         return new RpcServerBuilder();
     }
 
-
     /**
      * 设置代理的对象的类型，最好是接口类型
      */

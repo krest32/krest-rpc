@@ -159,6 +159,7 @@ public class JUnitFunctionTest {
         RpcFuture rpcFuture = rpcClientAsyncProxy.call("methodDelayOneSecond");
         assertNotNull(rpcFuture);
         rpcFuture.setRpcFutureListener(new RpcFutureListener() {
+            @Override
             public void onResult(Object result) {
                 countDownLatch.countDown();
             }
@@ -181,6 +182,7 @@ public class JUnitFunctionTest {
         rpcFuture = rpcClientAsyncProxy.call("methodThrowException");
         assertNotNull(rpcFuture);
         rpcFuture.setRpcFutureListener(new RpcFutureListener() {
+            @Override
             public void onResult(Object result) {
                 fail("failed to catch JUnitTestCustomException.");
             }
