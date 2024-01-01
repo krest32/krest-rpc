@@ -10,7 +10,7 @@ public class RpcService1Impl implements RpcService1 {
 
     @Override
     public String testMethod1(String name, int id) throws InterruptedException {
-        Thread.sleep(3000);
+//        Thread.sleep(3000);
         String result = "hello RpcService1 testMethod1";
         System.out.println(name + " " + id);
         return result;
@@ -18,7 +18,7 @@ public class RpcService1Impl implements RpcService1 {
 
     @Override
     public String testMethod2(String name, int id) throws InterruptedException {
-        Thread.sleep(3000);
+//        Thread.sleep(3000);
         String result = "hello RpcService1 testMethod2";
         System.out.println(name + " " + id);
         return result;

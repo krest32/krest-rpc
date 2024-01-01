@@ -14,22 +14,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ClientController {
 
+    static RpcClientAsyncProxy client1
+            = RpcClientProxyBuilder.create(FeignService1.class)
+            .timeout(0)
+            .threads(4)
+            .connect("127.0.0.1", 3721)
+            .buildAsyncProxy();
+
+    static RpcClientAsyncProxy client2
+            = RpcClientProxyBuilder.create(FeignService2.class)
+            .timeout(0)
+            .threads(4)
+            .connect("127.0.0.1", 3722)
+            .buildAsyncProxy();
+
     @GetMapping("testMethod1")
     public String testMethod1() throws Throwable {
 
-        RpcClientAsyncProxy client1 = RpcClientProxyBuilder.create(FeignService1.class)
-                .timeout(0)
-                .threads(4)
-                .connect("127.0.0.1", 3721)
-                .buildAsyncProxy();
-
-
-        RpcClientAsyncProxy client2
-                = RpcClientProxyBuilder.create(FeignService2.class)
-                .timeout(0)
-                .threads(4)
-                .connect("127.0.0.1", 3722)
-                .buildAsyncProxy();
 
         RpcFuture future1 = client1.call("testMethod1", "aaa", 16);
         System.out.println(future1);
@@ -39,7 +40,6 @@ public class ClientController {
         System.out.println(future3);
         RpcFuture future4 = client2.call("testMethod2", "ddd", 16);
         System.out.println(future4);
-
         System.out.println(JSON.toJSONString(future1.get()));
         System.out.println(JSON.toJSONString(future2.get()));
         System.out.println(JSON.toJSONString(future3.get()));
