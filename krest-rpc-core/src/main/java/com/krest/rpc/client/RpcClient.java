@@ -49,6 +49,7 @@ public class RpcClient implements InvocationHandler {
         this.port = port;
         this.isReConn = isReConn;
 
+        // 回调方法，写得很精彩
         rpcClientResponseHandler = new RpcClientResponseHandler(threads);
         // 失联后，启动监听器，重新连接
         if (isReConn) {
