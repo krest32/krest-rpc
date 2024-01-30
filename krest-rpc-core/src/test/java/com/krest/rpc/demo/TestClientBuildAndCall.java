@@ -19,8 +19,8 @@ public class TestClientBuildAndCall {
             }
         };
 
-        final TestInterface testInterface
-                = RpcClientProxyBuilder.create(TestInterface.class)
+        final TestInterface testInterface = RpcClientProxyBuilder
+                .create(TestInterface.class)
                 .timeout(0)
                 .threads(4)
                 .hook(hook)

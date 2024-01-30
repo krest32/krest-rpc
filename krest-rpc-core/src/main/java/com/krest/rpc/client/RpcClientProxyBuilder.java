@@ -77,6 +77,7 @@ public class RpcClientProxyBuilder {
         }
     }
 
+    // 方法泛型
     public static <T> ProxyBuilder<T> create(Class<T> targetClass) {
         return new ProxyBuilder<T>(targetClass);
     }

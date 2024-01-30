@@ -30,8 +30,6 @@ public class ClientController {
 
     @GetMapping("testMethod1")
     public String testMethod1() throws Throwable {
-
-
         RpcFuture future1 = client1.call("testMethod1", "aaa", 16);
         System.out.println(future1);
         RpcFuture future2 = client1.call("testMethod2", "bbb", 16);

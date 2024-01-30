@@ -101,7 +101,6 @@ public class RpcClient implements InvocationHandler {
             throws Throwable {
         // 生成异步调用的结果
         RpcFuture rpcFuture = call(method.getName(), args);
-
         // 如果调用失败
         if (rpcFuture == null) {
             log.info("RpcClient is unavailable when disconnect with the server.");
